@@ -1,3 +1,4 @@
+"use client"; // Enable client-side rendering
 import AgeGate from "../components/AgeGate";
 import { useState, useEffect } from "react";
 import { Metadata } from "next";
