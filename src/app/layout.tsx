@@ -1,10 +1,13 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { CartProvider } from "../lib/cart-context";
-import { Navbar } from "../components/Navbar";
-import { CartDrawer } from "../components/CartDrawer";
+import AgeGate from "../components/AgeGate";
+import { useState, useEffect } from "react";
+import { Metadata } from "next";
+import Navbar from "../components/Navbar";
+import CartDrawer from "../components/CartDrawer";
+import { CartProvider } from "../context/CartContext";
+import { Geist } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 
+// Fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -15,6 +18,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Metadata
 export const metadata: Metadata = {
   title: "GreenCross – Premium Cannabis Delivered",
   description:
@@ -26,17 +30,32 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [verified, setVerified] = useState<boolean>(false);
+
+  // Check localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("ageVerified");
+    if (stored === "true") setVerified(true);
+  }, []);
+
+  // Called when user confirms 21+
+  const handleConfirm = () => {
+    localStorage.setItem("ageVerified", "true");
+    setVerified(true);
+  };
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-slate-100`}
       >
+        {/* AgeGate popup */}
+        {!verified && <AgeGate onConfirm={handleConfirm} />}
+
         <CartProvider>
           <div className="flex min-h-screen flex-col bg-transparent">
             <Navbar />
-            <main className="flex-1 bg-transparent">
-              {children}
-            </main>
+            <main className="flex-1 bg-transparent">{children}</main>
             <CartDrawer />
           </div>
         </CartProvider>
@@ -44,3 +63,4 @@ export default function RootLayout({
     </html>
   );
 }
+
