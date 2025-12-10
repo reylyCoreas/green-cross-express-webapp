@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 
 interface AgeGateProps {
@@ -5,6 +6,30 @@ interface AgeGateProps {
 }
 
 const AgeGate: React.FC<AgeGateProps> = ({ onConfirm }) => {
+    const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === "true") {
+        setVisible(false);
+        onConfirm();
+      }
+    } catch {
+      // ignore localStorage errors (e.g., strict privacy modes)
+    }
+  }, [onConfirm]);
+
+  const confirm = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, "true");
+    } catch {}
+    setVisible(false);
+    onConfirm();
+  };
+
+  if (!visible) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Blurred + darkened background */}
