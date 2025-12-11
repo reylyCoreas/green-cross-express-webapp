@@ -13,7 +13,7 @@ import ClientProviders from "../components/ClientProviders";
 
 
 //Move all client-only logic into a client wrapper and mark AgeGate as client. 
-export const metadata; MetaData = {
+export const metadata: MetaData = {
   title: "GreenCross – Premium Cannabis Delivered",
   description:
     "Browse curated cannabis products, pre-order online, and pick up at your nearest GreenCross location in Houston.",
