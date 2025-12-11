@@ -7,14 +7,14 @@ import CartDrawer from "../components/CartDrawer";
 import { CartProvider } from "../context/CartContext";
 import { Geist } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
-import react from "react";
+import React from "react";
 import ClientProviders from "../components/ClientProviders";
 
 
 
 //Move all client-only logic into a client wrapper and mark AgeGate as client. 
-export const metadata; MetaData = {
-  title: "GreenCross – Premium Cannabis Delivered",
+export const metadata: MetaData = {
+  title: "GreenCross – Premium Cannabis PreOrdred",
   description:
     "Browse curated cannabis products, pre-order online, and pick up at your nearest GreenCross location in Houston.",
 }
@@ -41,7 +41,7 @@ const geistMono = Geist_Mono({
 
 // Metadata
 export const metadata: Metadata = {
-  title: "GreenCross – Premium Cannabis Delivered",
+  title: "GreenCross – Premium Cannabis PreOrdred",
   description:
     "Browse curated cannabis products, pre-order online, and pick up at your nearest GreenCross location in Houston.",
 };
