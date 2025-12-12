@@ -1,68 +1,72 @@
-"use client";
-import React from "react";
 
-interface AgeGateProps {
-  onConfirm: () => void;
-}
+"use client"; // Enable client-side rendering
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { CartProvider } from "../lib/cart-context";
+import { Navbar } from "../components/Navbar";
+import { CartDrawer } from "../components/CartDrawer";
+import AgeGate from "../components/AgeGate";
+import { useState, useEffect } from "react";
 
-const AgeGate: React.FC<AgeGateProps> = ({ onConfirm }) => {
-    const [visible, setVisible] = useState(true);
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "true") {
-        setVisible(false);
-        onConfirm();
-      }
-    } catch {
-      // ignore localStorage errors (e.g., strict privacy modes)
-    }
-  }, [onConfirm]);
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
-  const confirm = () => {
-    try {
-      localStorage.setItem(STORAGE_KEY, "true");
-    } catch {}
-    setVisible(false);
-    onConfirm();
-  };
+// Use the same storage key that AgeGate uses
+const AGE_STORAGE_KEY = "greencross_isOfAge";
 
-  if (!visible) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Blurred + darkened background */}
-      <div className="absolute inset-0 backdrop-blur-md bg-black/40"></div>
-
-      {/* Popup card */}
-      <div className="relative bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center border border-gray-200 dark:border-gray-700">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
-          Age Verification
-        </h2>
-
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          You must be 21 or older to enter this site.
-        </p>
-
-        <div className="flex gap-4 justify-center">
-          <button
-            onClick={() => alert("You must be 21+ to continue.")}
-            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-          >
-            No
-          </button>
-
-          <button
-            onClick={onConfirm}
-            className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl transition font-semibold shadow"
-          >
-            Yes
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+export const metadata: Metadata = {
+  title: "GreenCross – Premium Cannabis PreOrdered & Ready for pickup Online",
+  description:
+    "Browse curated cannabis products, pre-order online, and pick up at your nearest GreenCross location in Houston.",
 };
 
-export default AgeGate;
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>){
+  const [verified, setVerified] = useState<boolean>(false);
+
+  // Check localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(AGE_STORAGE_KEY);
+      if (stored === "true") setVerified(true);
+    } catch {
+      // ignore localStorage errors
+    }
+  }, []);
+
+  // Called when user confirms 21+
+  const handleConfirm = () => {
+    try {
+      localStorage.setItem(AGE_STORAGE_KEY, "true");
+    } catch {}
+    setVerified(true);
+  };
+  return (
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-slate-100`}
+      >
+        {/* AgeGate popup id ran before any other critical website functionality.*/}
+        {!verified && <AgeGate onConfirm={handleConfirm} />}
+        <CartProvider>
+          <div className="flex min-h-screen flex-col bg-transparent">
+            <Navbar />
+            <main className="flex-1 bg-transparent">{children}</main>
+            <CartDrawer />
+          </div>
+        </CartProvider>
+      </body>
+    </html>
+  );
+}
