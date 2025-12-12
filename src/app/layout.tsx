@@ -1,4 +1,4 @@
-"use client"; // Enable client-side rendering
+
 import React from "react";
 import { Metadata } from "next";
 import ClientProviders from "../components/ClientProviders";
@@ -36,8 +36,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-slate-100`}
       >
         <ClientProviders>
-          {/* AgeGate is a client component that manages its own visibility via localStorage.
-              We pass a no-op onConfirm because the AgeGate hides itself and can optionally notify. */}
+          
           <AgeGate onConfirm={() => {}} />
 
           <div className="flex min-h-screen flex-col bg-transparent">
